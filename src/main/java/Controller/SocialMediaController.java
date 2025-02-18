@@ -5,11 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+//import org.eclipse.jetty.http.HttpTester.Message;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Model.Account;
+import Model.Message;
 import Util.ConnectionUtil;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -37,6 +40,7 @@ public class SocialMediaController {
         //app.start(8080);
         app.post("/register", this::registration);
         app.post("/login", this::loggingIn);
+        app.post("/messages", this::messaging);
 
         return app;
     }
@@ -92,4 +96,32 @@ public class SocialMediaController {
                 e.printStackTrace();
             } 
     }
+
+    private void messaging(Context context) {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message;
+
+        try {
+            message = mapper.readValue(context.body(), Message.class);
+            Message messageCreated = service.messaging(message);
+            if (messageCreated == null) {
+                context.status(400);
+            }
+            else {
+                try {
+                    context.json(mapper.writeValueAsString(messageCreated));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (JsonMappingException e) {  
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } 
+
+
+        
+    }
+
 }

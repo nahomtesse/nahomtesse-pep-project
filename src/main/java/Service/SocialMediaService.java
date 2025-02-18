@@ -31,5 +31,17 @@ public class SocialMediaService {
         return null;
     }
 
+    public Message messaging(Message message) {
+        String mess = message.getMessage_text();
+        int messLength = mess.length();
+
+        if (message.getMessage_text() == null || message.getMessage_text() == "" || messLength > 255
+            || !messageDAO.messagerReal(message)) {
+            return null;
+        }
+
+        return messageDAO.createMessage(message);
+    }
+
     
 }
