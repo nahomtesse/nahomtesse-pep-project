@@ -13,7 +13,7 @@ public class SocialMediaService {
         String pass = account.getPassword();
         int passLength = pass.length();
 
-        if (account.getUsername() == null || account.getUsername() == " " || passLength < 4 
+        if (account.getUsername() == null || account.getUsername() == "" || passLength < 4 
             || accountDAO.nameExists(account)) {
                 return null;
         }

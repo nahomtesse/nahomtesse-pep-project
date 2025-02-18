@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Model.Account;
@@ -24,6 +25,13 @@ public class SocialMediaController {
      * suite must receive a Javalin object from this method.
      * @return a Javalin app object which defines the behavior of the Javalin controller.
      */
+
+    private SocialMediaService service = new SocialMediaService();
+
+    public SocialMediaController() {
+        this.service = new SocialMediaService();
+    }
+
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         //app.start(8080);
@@ -38,21 +46,27 @@ public class SocialMediaController {
      */
     private void registration(Context context) {
         ObjectMapper mapper = new ObjectMapper();
-        SocialMediaService service = new SocialMediaService();
-        Account account = context.bodyAsClass(Account.class);
-        Account created = service.registration(account);
-
-        if (created == null) {
-            context.status(400);
-        } 
-        else {
-            try {
-                context.status(200).json(mapper.writeValueAsString(created));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+        // SocialMediaService service = new SocialMediaService();
+        Account account;
+        try {
+            account = mapper.readValue(context.body(), Account.class);
+            Account created = service.registration(account);
+            if (created == null) {
+                context.status(400);
+            } 
+            else {
+                try {
+                    context.json(mapper.writeValueAsString(created));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (JsonMappingException e) {  
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
-        
+    
         
     }
 
