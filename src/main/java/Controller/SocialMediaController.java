@@ -36,6 +36,7 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         //app.start(8080);
         app.post("/register", this::registration);
+        app.post("/login", this::loggingIn);
 
         return app;
     }
@@ -65,10 +66,30 @@ public class SocialMediaController {
             e.printStackTrace();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-        }
-    
-        
+        } 
     }
 
-
+    private void loggingIn(Context context) {
+        ObjectMapper mapper = new ObjectMapper();
+        // SocialMediaService service = new SocialMediaService();
+        Account account;
+        try {
+            account = mapper.readValue(context.body(), Account.class);
+            Account loggedIn = service.logginIn(account);
+            if (loggedIn == null) {
+                context.status(401);
+            } 
+            else {
+                try {
+                    context.json(mapper.writeValueAsString(loggedIn));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }   catch (JsonMappingException e) {  
+                e.printStackTrace();
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            } 
+    }
 }

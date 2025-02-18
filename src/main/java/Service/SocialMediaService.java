@@ -15,9 +15,21 @@ public class SocialMediaService {
 
         if (account.getUsername() == null || account.getUsername() == "" || passLength < 4 
             || accountDAO.nameExists(account)) {
-                return null;
+            return null;
         }
 
         return accountDAO.createAccount(account);
     }
+
+    public Account logginIn(Account loginAccount) {
+        Account account = accountDAO.getAccountByUsername(loginAccount);
+
+        if (account != null && account.getPassword().equals(loginAccount.getPassword())) {
+            return account;
+        }
+
+        return null;
+    }
+
+    
 }

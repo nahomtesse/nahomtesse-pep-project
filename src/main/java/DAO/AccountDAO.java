@@ -50,7 +50,36 @@ public class AccountDAO {
 
 
         return false;
-        
+    }
+
+    public Account getAccountByUsername (Account account) {
+        String sql = "SELECT * FROM Account WHERE username = ?";
+
+        try (Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            ps.setString(1, account.getUsername());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt("account_id"); 
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                return new Account(id, username, password);
+            }
+
+            // try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            //     if (generatedKeys.next()) {
+            //         int generatedAccountId = generatedKeys.getInt(1);
+            //         return new Account(generatedAccountId, account.getUsername(), account.getPassword());
+            //     }
+            // }
+         
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
