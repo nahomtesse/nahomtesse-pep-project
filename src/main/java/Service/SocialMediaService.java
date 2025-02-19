@@ -90,5 +90,20 @@ public class SocialMediaService {
         return null;
     }
 
+    public Message updateMessageById(int id, String newMessageText) {
+        if (newMessageText == null || newMessageText == "" || newMessageText.length() > 255) {
+            return null;
+        }
+    
+        try {
+            Message updatedMessage = messageDAO.updateMessageById(id, newMessageText);
+            return updatedMessage;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+
     
 }

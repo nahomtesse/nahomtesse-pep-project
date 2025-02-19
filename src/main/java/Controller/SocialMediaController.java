@@ -47,6 +47,8 @@ public class SocialMediaController {
         app.get("/messages/{message_id}", this::getMessageById);
 
         app.delete("/messages/{message_id}", this::deleteMessageById);
+
+        app.patch("/messages/{message_id}", this::updateMessageById);
         return app;
     }
 
@@ -156,6 +158,25 @@ public class SocialMediaController {
         }
         else {
             context.json(message);
+        }
+    }
+
+    private void updateMessageById(Context context) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            int id = Integer.parseInt(context.pathParam("message_id"));
+            Message updateRequest = mapper.readValue(context.body(), Message.class);
+            String newMessageText = updateRequest.getMessage_text();
+            
+            Message updatedMessage = service.updateMessageById(id, newMessageText);
+            if (updatedMessage != null) {
+                context.json(updatedMessage);
+            } else {
+                context.status(400);
+                context.result("");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
