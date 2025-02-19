@@ -103,6 +103,23 @@ public class SocialMediaService {
         }
         return null;
     }
+
+    public List<Message> getAllMessageForUser(int id) {
+        List<Message> messages;
+        try {
+            messages = messageDAO.getAllMessageForUser(id);
+
+            if (messages == null) {
+                return null;
+            }
+    
+            return messages;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
     
 
     
