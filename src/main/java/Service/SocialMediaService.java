@@ -64,5 +64,18 @@ public class SocialMediaService {
         
     }
 
+    public Message getMessageById(int id) {
+        Message message;
+        try {
+            message = messageDAO.getMessageById(id);
+
+            return message;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     
 }
