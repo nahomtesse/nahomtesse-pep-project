@@ -77,5 +77,18 @@ public class SocialMediaService {
         return null;
     }
 
+    public Message deleteMessageById(int id) {
+        Message message;
+        try {
+            message = messageDAO.deleteMessageById(id);
+            return message;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     
 }

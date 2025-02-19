@@ -112,4 +112,33 @@ public class MessageDAO {
         return null;
 
     }
+
+    public Message deleteMessageById(int id) throws SQLException {   
+        String selectSql = "SELECT * FROM Message WHERE message_id = ?";
+        
+        try (Connection conn = ConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(selectSql)) {
+            
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int postedBy = rs.getInt("posted_by");
+                    String messageText = rs.getString("message_text");
+                    long timePosted = rs.getLong("time_posted_epoch");
+                    
+                    Message messageToDelete = new Message(id, postedBy, messageText, timePosted);
+                    
+                    String deleteSql = "DELETE FROM Message WHERE message_id = ?";
+                    try (PreparedStatement deletePs = conn.prepareStatement(deleteSql)) {
+                        deletePs.setInt(1, id);
+                        if (deletePs.executeUpdate() > 0) {
+                            return messageToDelete;
+                        }
+                    }
+                }
+            }
+        }
+        return null; 
+    }
+    
 }
