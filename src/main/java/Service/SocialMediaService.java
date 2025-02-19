@@ -5,6 +5,9 @@ import DAO.MessageDAO;
 import Model.Account;
 import Model.Message;
 
+import java.sql.SQLException;
+import java.util.*;
+
 public class SocialMediaService {
     private AccountDAO accountDAO = new AccountDAO();
     private MessageDAO messageDAO = new MessageDAO();
@@ -41,6 +44,24 @@ public class SocialMediaService {
         }
 
         return messageDAO.createMessage(message);
+    }
+
+    public List<Message> allMessage() {
+        List<Message> messages;
+        try {
+            messages = messageDAO.getAllMessages();
+
+            if (messages == null) {
+                return null;
+            }
+    
+            return messages;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+        
     }
 
     

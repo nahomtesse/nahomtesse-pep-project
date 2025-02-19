@@ -4,6 +4,9 @@ import Model.Message;
 import Util.ConnectionUtil;
 
 import java.sql.*;
+import java.util.*;
+
+//import org.junit.runners.model.Statement;
 
 public class MessageDAO {
     public boolean messagerReal(Message message) {
@@ -52,5 +55,34 @@ public class MessageDAO {
         }
 
         return null;
+    }
+
+    public List<Message> getAllMessages() throws SQLException {
+        String sql = "SELECT * FROM message";
+        List<Message> messages = new ArrayList<>();
+
+        try (Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("message_id");
+                    int postedBy = rs.getInt("posted_by");
+                    String messageText = rs.getString("message_text");
+                    Long timePosted = rs.getLong("time_posted_epoch");
+                  
+                    Message message = new Message(id, postedBy, messageText, timePosted);
+                    messages.add(message);
+
+                    
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return messages;
+
     }
 }

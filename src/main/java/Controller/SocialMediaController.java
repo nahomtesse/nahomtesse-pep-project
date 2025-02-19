@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 
 //import org.eclipse.jetty.http.HttpTester.Message;
 
@@ -41,6 +42,7 @@ public class SocialMediaController {
         app.post("/register", this::registration);
         app.post("/login", this::loggingIn);
         app.post("/messages", this::messaging);
+        app.get("/messages",this::allMessages);
 
         return app;
     }
@@ -122,6 +124,11 @@ public class SocialMediaController {
 
 
         
+    }
+
+    private void allMessages(Context context) {
+        List<Message> messages = service.allMessage();
+        context.json(messages);
     }
 
 }
